@@ -1,0 +1,30 @@
+kind: Rules
+metadata:
+  namespace: xl-bank-12
+spec:
+  - name: "xl-bank-labels-1"
+    condition:
+      deployedType: yak.Json
+    processor:
+      - type: freemarker
+        description: "Adding the labels to the resulting YAML file"
+        parameters:
+          template: |
+            { "metadata": {
+                "labels": {
+                  "environment":"${environment}}",
+                  "version":"${version}"
+                }
+              }
+            }
+          variables:
+            version: "#{#ctx.deployedApplication.version.name}"
+            environment: "#{#ctx.deployedApplication.environment.name}"
+      - type: freemarker
+        description: "Multiplies replicas by 5"
+        parameters:
+          template: |
+            { "spec" : {
+               "replicas":"?"
+              }
+            }
